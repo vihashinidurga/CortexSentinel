@@ -1,0 +1,28 @@
+version: 2
+
+sources:
+  - name: tpch-raw
+    description: "This project uses TPCH-S10 data from snowflake's SNOWFLAKE_SAMPLE_DATA database.Standard TPC-H benchmark data simulating a global manufacturing and supply chain system at 10GB scale."
+    database: dbt_cs
+    schema: raw_data
+    tables:
+      - name: raw_lineitem
+        description: "The primary transaction table containing individual line items for every order. Grain: one row per item per order."
+
+      - name: raw_orders
+        description: "Header-level transaction data including order status, total price, and priority. One order contains multiple line items."
+
+      - name: raw_part
+        description: "Master list of all parts available in the inventory, including physical attributes and retail pricing."
+
+      - name: raw_supplier
+        description: "Supplier registry containing contact details and account balances for vendors across all regions."
+
+      - name: raw_customer
+        description: "Customer profile data including market segments and geographic location. Essential for demographic analysis."
+
+      - name: raw_nation
+        description: "Lookup table for countries, used to group customers and suppliers by national boundaries."
+
+      - name: raw_region
+        description: "Top-level geographic hierarchy (e.g., Africa, America) used for global business reporting."
