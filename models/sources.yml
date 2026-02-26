@@ -26,3 +26,7 @@ sources:
 
       - name: raw_region
         description: "Top-level geographic hierarchy (e.g., Africa, America) used for global business reporting."
+
+        
+      - name: partsupp
+        description: "Relationship table linking parts to suppliers, tracking the specific cost and available quantity from each vendor."
