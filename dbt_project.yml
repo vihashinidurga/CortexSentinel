@@ -39,4 +39,4 @@ models:
   cortex_sentinel:
     # Applies to all files under models/example/
     staging:
-      +materialized: table
+      +materialized: view

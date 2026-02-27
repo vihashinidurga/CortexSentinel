@@ -1,3 +1,11 @@
+{{
+    config(
+        materialized='incremental',
+        incremental_strategy='merge',
+        unique_key='order_id'
+    )
+}}
+
 with
     source as (select * from {{ source("tpch-raw", "raw_orders") }}),
     renamed as (

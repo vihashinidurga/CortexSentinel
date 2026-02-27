@@ -1,3 +1,11 @@
+{{
+    config(
+        materialized='incremental',
+        incremental_strategy='merge',
+        unique_key=['part_key', 'supplier_key']
+    )
+}}
+
 with
     source as (select * from {{ source("tpch-raw", "raw_partsupp") }}),
     renamed as (
