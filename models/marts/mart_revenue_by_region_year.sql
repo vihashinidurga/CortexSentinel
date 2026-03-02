@@ -7,8 +7,7 @@ with
         select
             o.region_name,
             o.nation_name,
-            -- {{ date_part('year', 'o.order_date') }} as order_year,
-            date_part('year', 'o.order_date') as order_year,
+            date_part('year', o.order_date) as order_year,
             sum(l.extended_price * (1 - l.discount_percentage)) as total_revenue
         from lineitem l
         inner join orders o on l.order_key = o.order_key
