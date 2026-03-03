@@ -45,10 +45,9 @@ inference as (
         snowflake.cortex.complete(
             '{{ model_choice }}',
             concat(
-                'Validate the following data based on these semantic rules: ', '{{ rules }}',
-                '. Return ONLY a JSON object with this exact structure: ',
-                '{"valid": boolean, "confidence": float, "reason": "short explanation"}. ',
-                'Data: ', ai_input::text
+                'Validate based on semantic rules: ', {{ dbt.string_literal(rules) }},
+                '. Return ONLY a JSON object: {"valid": boolean, "confidence": float, "reason": "string"}. ',
+                'Data: ', cast(ai_input as text)
             )
         ) as ai_raw_response
     from filtered
@@ -65,11 +64,11 @@ parsed as (
 select 
     ai_input,
     ai_raw_response,
-    ai_json:reason::text as failure_reason,
-    ai_json:confidence::float as ml_confidence
+    cast(ai_json:reason as text) as failure_reason,
+    cast(ai_json:confidence as float) as ml_confidence
 from parsed
-where (ai_json:valid::boolean = false)
-   or (ai_json:confidence::float < {{ confidence_threshold }})
+where (cast(ai_json:valid as boolean) = false)
+   or (cast(ai_json:confidence as float) < {{ confidence_threshold }})
    or (ai_json is null) -- Handle malformed JSON or timeouts
 
 {% endtest %}
