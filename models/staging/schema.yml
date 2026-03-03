@@ -1,0 +1,13 @@
+version: 2
+
+models:
+  - name: stg_mock_profiles
+    description: "Mock profiles for AI validation"
+    columns:
+      - name: job_title
+        tests:
+          - cortex_validation:
+              rules: "The job title must be a realistic professional role. Flag anything that sounds suspicious or fun-only (e.g., 'Astronaut at Pizza Hut')."
+              confidence_threshold: 0.8
+              mode: 'ai_full'
+              row_limit: 10
