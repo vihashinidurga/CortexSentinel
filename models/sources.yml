@@ -8,25 +8,137 @@ sources:
     tables:
       - name: raw_lineitem
         description: "The primary transaction table containing individual line items for every order. Grain: one row per item per order."
+        tests:
+          - dbt_utils.unique_combination_of_columns:
+              combination_of_columns:
+                - l_orderkey
+                - l_linenumber
+          - dbt_utils.expression_is_true:
+              expression: "l_shipdate <= l_receiptdate"
+        columns:
+          - name: l_orderkey
+            tests:
+              - relationships:
+                  to: source('tpch-raw', 'raw_orders')
+                  field: o_orderkey
+          - name: l_partkey
+            tests:
+              - relationships:
+                  to: source('tpch-raw', 'raw_part')
+                  field: p_partkey
+          - name: l_suppkey
+            tests:
+              - relationships:
+                  to: source('tpch-raw', 'raw_supplier')
+                  field: s_suppkey
+          - name: l_quantity
+            tests:
+              - not_null
+          - name: l_extendedprice
+            tests:
+              - not_null
+          - name: l_discount
+            tests:
+              - dbt_utils.expression_is_true:
+                  expression: ">= 0 and <= 1"
+          - name: l_tax
+            tests:
+              - dbt_utils.expression_is_true:
+                  expression: ">= 0 and <= 1"
 
       - name: raw_orders
         description: "Header-level transaction data including order status, total price, and priority. One order contains multiple line items."
+        columns:
+          - name: o_orderkey
+            tests:
+              - not_null
+              - unique
+          - name: o_custkey
+            tests:
+              - not_null
+              - relationships:
+                  to: source('tpch-raw', 'raw_customer')
+                  field: c_custkey
+          - name: o_orderdate
+            tests:
+              - not_null
+          - name: o_totalprice
+            tests:
+              - not_null
 
       - name: raw_part
         description: "Master list of all parts available in the inventory, including physical attributes and retail pricing."
+        columns:
+          - name: p_partkey
+            tests:
+              - not_null
+              - unique
 
       - name: raw_supplier
         description: "Supplier registry containing contact details and account balances for vendors across all regions."
+        columns:
+          - name: s_suppkey
+            tests:
+              - not_null
+              - unique
+          - name: s_nationkey
+            tests:
+              - not_null
+              - relationships:
+                  to: source('tpch-raw', 'raw_nation')
+                  field: n_nationkey
 
       - name: raw_customer
         description: "Customer profile data including market segments and geographic location. Essential for demographic analysis."
+        columns:
+          - name: c_custkey
+            tests:
+              - not_null
+              - unique
+          - name: c_nationkey
+            tests:
+              - not_null
+              - relationships:
+                  to: source('tpch-raw', 'raw_nation')
+                  field: n_nationkey
 
       - name: raw_nation
         description: "Lookup table for countries, used to group customers and suppliers by national boundaries."
+        columns:
+          - name: n_nationkey
+            tests:
+              - not_null
+              - unique
+          - name: n_regionkey
+            tests:
+              - not_null
+              - relationships:
+                  to: source('tpch-raw', 'raw_region')
+                  field: r_regionkey
 
       - name: raw_region
         description: "Top-level geographic hierarchy (e.g., Africa, America) used for global business reporting."
-
+        columns:
+          - name: r_regionkey
+            tests:
+              - not_null
+              - unique
         
       - name: raw_partsupp
         description: "Relationship table linking parts to suppliers, tracking the specific cost and available quantity from each vendor."
+        tests:
+          - dbt_utils.unique_combination_of_columns:
+              combination_of_columns:
+                - ps_partkey
+                - ps_suppkey
+        columns:
+          - name: ps_partkey
+            tests:
+              - relationships:
+                  to: source('tpch-raw', 'raw_part')
+                  field: p_partkey
+          - name: ps_suppkey
+            tests:
+              - relationships:
+                  to: source('tpch-raw', 'raw_supplier')
+                  field: s_suppkey
