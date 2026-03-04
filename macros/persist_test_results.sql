@@ -1,6 +1,6 @@
+-- depends_on: {{ ref('validation_logs') }}
+-- depends_on: {{ ref('validation_summaries') }}
 {% macro persist_test_results(results) %}
-  -- depends_on: {{ ref('validation_logs') }}
-  -- depends_on: {{ ref('validation_summaries') }}
   
   {%- set ai_tests = ['cortex_validation', 'cortex_revenue_dominance', 'cortex_key_duplication'] -%}
   
