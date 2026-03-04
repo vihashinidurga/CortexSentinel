@@ -31,9 +31,7 @@ sources:
             tests:
               - not_null
           - name: l_discount
-            tests:
           - name: l_tax
-            tests:
 
       - name: raw_orders
         description: "Header-level transaction data including order status, total price, and priority. One order contains multiple line items."
