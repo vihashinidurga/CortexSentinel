@@ -1,4 +1,6 @@
-{% test cortex_key_duplication(model, columns, model_choice='snowflake-arctic') %}
+{% test cortex_key_duplication(model, columns=none, column_name=none, model_choice='snowflake-arctic') %}
+
+{%- set columns = columns if columns else [column_name] -%}
 
 {%- set columns_csv = columns | join(', ') -%}
 

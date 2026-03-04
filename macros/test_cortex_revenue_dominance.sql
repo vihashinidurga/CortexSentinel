@@ -1,4 +1,4 @@
-{% test cortex_revenue_dominance(model, customer_column, revenue_column, threshold_percent=50, model_choice='snowflake-arctic') %}
+{% test cortex_revenue_dominance(model, customer_column, revenue_column, threshold_percent=50, model_choice='snowflake-arctic', column_name=none) %}
 
 with totals as (
     select 
