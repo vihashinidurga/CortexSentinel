@@ -6,11 +6,12 @@ models:
     description: "Staged orders"
     tests:
       - cortex_revenue_dominance:
-          customer_column: customer_key
-          revenue_column: total_price
-          threshold_percent: 50
           config:
             snowflake_warehouse: AI_XS_WH
+          arguments:
+            customer_column: customer_key
+            revenue_column: total_price
+            threshold_percent: 50
     columns:
       - name: order_key
         tests:
@@ -19,21 +20,24 @@ models:
       - name: order_id
         tests:
           - cortex_key_duplication:
-              columns: ['order_id']
               config:
                 snowflake_warehouse: AI_XS_WH
+              arguments:
+                columns: ['order_id']
       - name: status
         tests:
           - accepted_values:
-              values: ['F', 'O', 'P']
+              arguments:
+                values: ['F', 'O', 'P']
 
   - name: stg_lineitem
     description: "Staged lineitems"
     tests:
       - cortex_key_duplication:
-          columns: ['order_key', 'line_number']
           config:
             snowflake_warehouse: AI_XS_WH
+          arguments:
+            columns: ['order_key', 'line_number']
     columns:
       - name: line_item_key
         tests:
@@ -42,11 +46,13 @@ models:
       - name: return_flag
         tests:
           - accepted_values:
-              values: ['R', 'A', 'N']
+              arguments:
+                values: ['R', 'A', 'N']
       - name: status
         tests:
           - accepted_values:
-              values: ['O', 'F']
+              arguments:
+                values: ['O', 'F']
 
   - name: stg_customers
     description: "Staged customers"
