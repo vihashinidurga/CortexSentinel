@@ -7,7 +7,14 @@
     
     {% set log_inserts = [] %}
     {% for result in results if result.status == 'fail' %}
-      {% if result.node.name.split('_')[0] in ai_tests %}
+      {% set is_ai_test = false %}
+      {% for prefix in ai_tests %}
+        {% if result.node.name.startswith(prefix) %}
+          {% set is_ai_test = true %}
+        {% endif %}
+      {% endfor %}
+
+      {% if is_ai_test %}
         {% do log_inserts.append("
           insert into " ~ ref('validation_logs') ~ " (
               run_id, model_name, raw_ai_response, parsed_valid, confidence, reason, created_at

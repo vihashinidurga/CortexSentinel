@@ -58,10 +58,12 @@ parsed as (
 )
 
 select 
-     {{ columns_csv }},
+     {{ columns_csv }} as ai_input,
      ai_raw_response,
-     cast(get(ai_json, 'duplication_type') as text) as diagnosis
+     cast(get(ai_json, 'reason') as text) as failure_reason,
+     0.9 as ml_confidence -- Default high confidence for structural checks
 from parsed
-where (ai_json is not null)
+where (cast(get(ai_json, 'valid') as boolean) = false)
+   or (ai_json is null)
 
 {% endtest %}

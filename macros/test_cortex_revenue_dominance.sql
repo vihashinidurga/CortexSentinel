@@ -48,7 +48,11 @@ parsed as (
     from inference
 )
 
-select *
+select 
+    revenue_profile as ai_input,
+    ai_raw_response,
+    cast(get(ai_json, 'reason') as text) as failure_reason,
+    cast(get(ai_json, 'confidence') as float) as ml_confidence
 from parsed
 where (cast(get(ai_json, 'valid') as boolean) = false) 
    or (ai_json is null)
