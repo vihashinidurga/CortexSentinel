@@ -1,24 +1,27 @@
 version: 2
 
 models:
-  - name: stg_mock_profiles
-    description: "Mock profiles for AI validation"
-    columns:
-      - name: job_title
-        tests:
-          - cortex_validation:
-              rules: "The job title must be a realistic professional role. Flag anything that sounds suspicious or fun-only (e.g., 'Astronaut at Pizza Hut')."
-              confidence_threshold: 0.8
-              mode: 'ai_full'
-              row_limit: 10
 
   - name: stg_orders
     description: "Staged orders"
+    tests:
+      - cortex_revenue_dominance:
+          customer_column: customer_key
+          revenue_column: total_price
+          threshold_percent: 50
+          config:
+            snowflake_warehouse: AI_XS_WH
     columns:
       - name: order_key
         tests:
           - not_null
           - unique
+      - name: order_id
+        tests:
+          - cortex_key_duplication:
+              columns: ['order_id']
+              config:
+                snowflake_warehouse: AI_XS_WH
       - name: status
         tests:
           - accepted_values:
@@ -26,6 +29,11 @@ models:
 
   - name: stg_lineitem
     description: "Staged lineitems"
+    tests:
+      - cortex_key_duplication:
+          columns: ['order_key', 'line_number']
+          config:
+            snowflake_warehouse: AI_XS_WH
     columns:
       - name: line_item_key
         tests:
@@ -87,3 +95,4 @@ models:
         tests:
           - not_null
           - unique
+  
