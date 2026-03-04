@@ -1,12 +1,6 @@
 {% macro persist_test_results(results) %}
-  {#- 
-    Force dependency inference for on-run-end hook
-    -- depends_on: {{ ref('validation_logs') }}
-    -- depends_on: {{ ref('validation_summaries') }}
-  -#}
-  {% set _ = ref('validation_logs') %}
-  {% set _ = ref('validation_summaries') %}
   
+  {%- set ai_tests = ['cortex_validation', 'cortex_revenue_dominance', 'cortex_key_duplication'] -%}
   {% for result in results if result.status == 'fail' %}
     {% if result.node.name.split('_')[0] in ai_tests %}
       

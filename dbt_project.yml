@@ -10,6 +10,8 @@ config-version: 2
 profile: 'default'
 
 on-run-end:
+  - "-- depends_on: {{ ref('validation_logs') }}"
+  - "-- depends_on: {{ ref('validation_summaries') }}"
   - "{{ persist_test_results(results) }}"
 
 # These configurations specify where dbt should look for different types of files.
