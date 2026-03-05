@@ -9,6 +9,7 @@ with
         select
             l.line_item_key,
             l.order_key,
+            l.order_id,
             l.part_key,
             l.supplier_key,
             l.line_number,

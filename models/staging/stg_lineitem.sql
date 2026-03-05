@@ -12,7 +12,8 @@ with
         select
             {{ dbt_utils.generate_surrogate_key(["l_orderkey", "l_linenumber"]) }}
             as line_item_key,
-            l_orderkey as order_key,
+            {{ dbt_utils.generate_surrogate_key(["l_orderkey"]) }} as order_key,
+            l_orderkey as order_id,
             l_partkey as part_key,
             l_suppkey as supplier_key,
             l_linenumber as line_number,
