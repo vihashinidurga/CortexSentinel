@@ -1,4 +1,4 @@
-{% test cortex_validation(model, column_name=none, columns=none, rules="", confidence_threshold=0.8, mode='hybrid', row_limit=1000, model_choice='mistral-7b') %}
+{% test cortex_validation(model, column_name=none, columns=none, rules="", confidence_threshold=0.8, mode='hybrid', row_limit=1000, model_choice='snowflake-arctic') %}
 
 {# 
     Cortex AI Data Validation Generic Test
@@ -11,7 +11,7 @@
     - confidence_threshold: Float (0-1) to determine failure
     - mode: 'sql_only' | 'hybrid' | 'ai_full' | 'sample' | 'incremental'
     - row_limit: Max rows to process to control costs
-    - model_choice: Cortex LLM model to use (default: mistral-7b)
+    - model_choice: Cortex LLM model to use (default: snowflake-arctic)
 #}
 
 with base as (
