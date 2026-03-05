@@ -3,7 +3,7 @@
   -- depends_on: {{ ref('validation_summaries') }}
 
   {% if execute %}
-    {%- set ai_tests = ['cortex_validation', 'cortex_revenue_dominance', 'cortex_key_duplication'] -%}
+    {%- set ai_tests = ['cortex_validation', 'cortex_revenue_dominance', 'cortex_key_duplication', 'cortex_revenue_reconciliation'] -%}
     
     {% set log_inserts = [] %}
     {% for result in results if result.status == 'fail' %}

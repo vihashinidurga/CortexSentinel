@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: mart_revenue_by_region_year
+    description: "Revenue aggregated by region and year. Used for AI Revenue Reconciliation."
+    tests:
+      - cortex_revenue_reconciliation:
+          config:
+            snowflake_warehouse: AI_XS_WH
+          arguments:
+            other_model: ref('int_lineitem_enriched')
+            revenue_expression: "total_revenue"
+            other_revenue_expression: "extended_price * (1 - discount_percentage)"
+            threshold_variance: 0.01
