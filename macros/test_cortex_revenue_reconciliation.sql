@@ -2,24 +2,23 @@
 
 with model_1 as (
     select 
-        sum({{ revenue_expression }}) as total_revenue
+        cast(coalesce(sum(cast({{ revenue_expression }} as float)), 0) as float) as total_revenue
     from {{ model }}
 ),
 
 model_2 as (
     select 
-        sum({{ other_revenue_expression }}) as total_revenue
+        cast(coalesce(sum(cast({{ other_revenue_expression }} as float)), 0) as float) as total_revenue
     from {{ other_model }}
 ),
 
 comparison as (
     select
-        cast(m1.total_revenue as float) as m1_revenue,
-        cast(m2.total_revenue as float) as m2_revenue,
+        total_revenue as m1_revenue,
+        (select total_revenue from model_2) as m2_revenue,
         abs(m1_revenue - m2_revenue) as variance,
         (variance / nullif(m1_revenue, 0)) * 100 as variance_pct
-    from model_1 m1
-    cross join model_2 m2
+    from model_1
 ),
 
 inference as (
@@ -29,9 +28,9 @@ inference as (
             '{{ model_choice }}',
             concat(
                 'Reconcile revenue between two models. ',
-                'Model 1 (Target): ', round(m1_revenue, 2), '. ',
-                'Model 2 (Source): ', round(m2_revenue, 2), '. ',
-                'Variance: ', round(variance, 2), ' (', round(variance_pct, 2), '%). ',
+                'Model 1 (Target): ', coalesce(round(m1_revenue, 2)::string, '0'), '. ',
+                'Model 2 (Source): ', coalesce(round(m2_revenue, 2)::string, '0'), '. ',
+                'Variance: ', coalesce(round(variance, 2)::string, '0'), ' (', coalesce(round(variance_pct, 2)::string, '0'), '%). ',
                 'Does this variance suggest a data leak, calculation error, or is it within acceptable limits? ',
                 'Return JSON object: {"valid": boolean, "reason": "string", "confidence": float}.'
             )
