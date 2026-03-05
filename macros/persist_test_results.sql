@@ -5,6 +5,9 @@
   {% if execute %}
     {%- set ai_tests = ['cortex_validation', 'cortex_revenue_dominance', 'cortex_key_duplication', 'cortex_revenue_reconciliation'] -%}
     
+    {% set log_relation = ref('validation_logs') | string %}
+    {% set sum_relation = ref('validation_summaries') | string %}
+    
     {% set log_inserts = [] %}
     {% for result in results if result.status == 'fail' %}
       {% set is_ai_test = false %}
@@ -16,7 +19,7 @@
 
       {% if is_ai_test %}
         {% do log_inserts.append("
-          insert into " ~ ref('validation_logs') ~ " (
+          insert into " ~ log_relation ~ " (
               run_id, model_name, raw_ai_response, parsed_valid, confidence, reason, created_at
           )
           select 
@@ -40,7 +43,7 @@
     {% set summary_insert = "" %}
     {% if total_tests > 0 %}
         {% set summary_insert = "
-          insert into " ~ ref('validation_summaries') ~ " (
+          insert into " ~ sum_relation ~ " (
               run_id, model_name, total_rows_validated, failed_rows, failure_rate, avg_confidence, execution_time_ms, created_at
           )
           select 
@@ -49,7 +52,7 @@
               " ~ total_tests ~ ",
               " ~ failed_tests ~ ",
               " ~ failure_rate ~ ",
-              coalesce((select avg(confidence) from " ~ ref('validation_logs') ~ " where run_id = '" ~ invocation_id ~ "'), 0),
+              coalesce((select avg(confidence) from " ~ log_relation ~ " where run_id = '" ~ invocation_id ~ "'), 0),
               " ~ total_exec_time ~ ",
               current_timestamp()
           ;

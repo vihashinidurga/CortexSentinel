@@ -2,13 +2,13 @@
 
 with model_1 as (
     select 
-        cast(coalesce(sum(cast({{ revenue_expression }} as float)), 0) as float) as total_revenue
+        cast(coalesce(sum(try_cast({{ revenue_expression }}::string as float)), 0) as float) as total_revenue
     from {{ model }}
 ),
 
 model_2 as (
     select 
-        cast(coalesce(sum(cast({{ other_revenue_expression }} as float)), 0) as float) as total_revenue
+        cast(coalesce(sum(try_cast(({{ other_revenue_expression }})::string as float)), 0) as float) as total_revenue
     from {{ other_model }}
 ),
 
