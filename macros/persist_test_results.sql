@@ -20,8 +20,8 @@
               run_id, model_name, raw_ai_response, parsed_valid, confidence, reason, created_at
           )
           select 
-              '" ~ invocation_id ~ "',
-              '" ~ result.node.attached_node ~ "',
+              {{ dbt.string_literal(invocation_id) }},
+              {{ dbt.string_literal(result.node.attached_node) }},
               ai_raw_response,
               false,
               ml_confidence,
@@ -44,12 +44,12 @@
               run_id, model_name, total_rows_validated, failed_rows, failure_rate, avg_confidence, execution_time_ms, created_at
           )
           select 
-              '" ~ invocation_id ~ "',
+              {{ dbt.string_literal(invocation_id) }},
               'Global Test Run',
               " ~ total_tests ~ ",
               " ~ failed_tests ~ ",
               " ~ failure_rate ~ ",
-              (select avg(confidence) from " ~ ref('validation_logs') ~ " where run_id = '" ~ invocation_id ~ "'),
+              (select avg(confidence) from " ~ ref('validation_logs') ~ " where run_id = {{ dbt.string_literal(invocation_id) }}),
               " ~ total_exec_time ~ ",
               current_timestamp()
           ;

@@ -14,10 +14,10 @@ model_2 as (
 
 comparison as (
     select
-        m1.total_revenue as m1_revenue,
-        m2.total_revenue as m2_revenue,
-        abs(m1.total_revenue - m2.total_revenue) as variance,
-        (variance / nullif(m1.total_revenue, 0)) * 100 as variance_pct
+        cast(m1.total_revenue as float) as m1_revenue,
+        cast(m2.total_revenue as float) as m2_revenue,
+        abs(m1_revenue - m2_revenue) as variance,
+        (variance / nullif(m1_revenue, 0)) * 100 as variance_pct
     from model_1 m1
     cross join model_2 m2
 ),
